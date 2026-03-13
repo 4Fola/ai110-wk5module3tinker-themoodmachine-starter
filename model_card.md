@@ -9,11 +9,11 @@ You may complete this model card for whichever version you used, or compare both
 
 ## 1. Model Overview
 
----- BEGIN ----
+### ---- BEGIN ----
 - Model Type: A hybrid system comparing a Rule-Based (Dictionary) classifier and a Machine Learning (Logistic Regression) classifier.
 
 - Intended Purpose: To classify short social media-style posts into four moods: Positive, Negative, Neutral, or Mixed.
----- END ----
+### ---- END ----
 **Model type:**  
 Describe whether you used the rule based model, the ML model, or both.  
 Example: “I used the rule based model only” or “I compared both models.”
