@@ -52,6 +52,13 @@ SAMPLE_POSTS = [
     "I am not happy about this",
 ]
 
+SAMPLE_POSTS.extend([
+    "this new update is absolute fire! 🔥",
+    "I'm lowkey stressed about the deadline.",
+    "The food ws okay, but the service was mid.",
+    "I love it when my comupter crashes right before I save. 💀",
+    "Feeling chill and relaxed today! ✨"
+])
 # Human labels for each post above.
 # Allowed labels in the starter:
 #   - "positive"
@@ -68,6 +75,15 @@ TRUE_LABELS = [
 ]
 
 # TODO: Add 5-10 more posts and labels.
+
+TRUE_LABELS.extend([
+    "positive", # fire/emoji signal
+    "negative", # "lowkey stressed"
+    "mixed", # "okay" vs "mid"
+    "negative", # Sarcasm + "💀"
+    "positive" # "chill"
+])
+
 #
 # Requirements:
 #   - For every new post you add to SAMPLE_POSTS, you must add one

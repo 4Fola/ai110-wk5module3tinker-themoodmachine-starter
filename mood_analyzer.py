@@ -1,3 +1,7 @@
+import re
+from typing import List, Optional
+from dataset import POSITIVE_WORDS, NEGATIVE_WORDS
+
 # mood_analyzer.py
 """
 Rule based mood analyzer for short text snippets.
@@ -7,6 +11,10 @@ This class starts with very simple logic:
   - Look for positive and negative words
   - Compute a numeric score
   - Convert that score into a mood label
+"""
+"""
+Preferred to build a semi high-quality, minimal-code web interface, using Streamlit.
+Will add funciinal logic from MoodAnalyzer to this file, and use Streamlit to create a simple UI for users to input text and see the predicted mood.
 """
 
 from typing import List, Dict, Tuple, Optional
@@ -18,19 +26,14 @@ class MoodAnalyzer:
     """
     A very simple, rule based mood classifier.
     """
+    def preprocess(self, text: str) -> List[str]:
+        # Basic regex to remove any punctuation and lowercase the text.
+        cleaned = re.sub(r'[^\w\s]', '', text.lower())
+        return cleaned.split()
 
-    def __init__(
-        self,
-        positive_words: Optional[List[str]] = None,
-        negative_words: Optional[List[str]] = None,
-    ) -> None:
-        # Use the default lists from dataset.py if none are provided.
-        positive_words = positive_words if positive_words is not None else POSITIVE_WORDS
-        negative_words = negative_words if negative_words is not None else NEGATIVE_WORDS
-
-        # Store as sets for faster lookup.
-        self.positive_words = set(w.lower() for w in positive_words)
-        self.negative_words = set(w.lower() for w in negative_words)
+    def __init__(self, positive_words=None, negative_words=None):
+        self.positive_words = set(w.lower() for w in (positive_words or POSITIVE_WORDS))
+        self.negative_words = set(w.lower() for w in (negative_words or NEGATIVE_WORDS))
 
     # ---------------------------------------------------------------------
     # Preprocessing
@@ -52,10 +55,9 @@ class MoodAnalyzer:
           - Handle simple emojis separately (":)", ":-(", "🥲", "😂")
           - Normalize repeated characters ("soooo" -> "soo")
         """
-        cleaned = text.strip().lower()
-        tokens = cleaned.split()
-
-        return tokens
+        # Security/Sanitization: Remove punctuation to prevent bypasses and lowercase for consistency.
+        cleaned = re.sub(r'[^\w\s]', '', text.lower().strip())
+        return cleaned.split()
 
     # ---------------------------------------------------------------------
     # Scoring logic
@@ -75,6 +77,22 @@ class MoodAnalyzer:
           - Give some words higher weights than others (for example "hate" < "annoyed")
           - Treat emojis or slang (":)", "lol", "💀") as strong signals
         """
+        tokens = self.preprocess(text)
+        score = 0
+        negators = {"not", "never", "no", "neither", "nor"}
+
+        for i, token in enumerate(tokens):
+            multiplier = 1
+            # Logic: If the previous word was a negator, the sentiment should be flipped
+            if i > 0 and tokens[i-1] in negators:
+                multiplier = -1
+
+            if token in self.positive_words:
+                score += (1 * multiplier)
+            elif token in self.negative_words:
+                score -= (1 * multiplier)
+        return score
+            
         # TODO: Implement this method.
         #   1. Call self.preprocess(text) to get tokens.
         #   2. Loop over the tokens.
@@ -105,6 +123,17 @@ class MoodAnalyzer:
         Just remember that whatever labels you return should match the labels
         you use in TRUE_LABELS in dataset.py if you care about accuracy.
         """
+        score = self.score_text(text)
+        if score > 0: return "positive"
+        if score < 0: return "negative"
+        return "neutral"
+    
+    # Logic: I have the negation check to ensure that "not happy" results in a negative (-1) score instead of +1
+    # Security: Usineg re.sub and strip(), is to ensure that basic script inkjection or weird/unusual
+      # characters are neutralived during preprocessing.
+    # Efficiency: the scoring is calculated in a single 0(n) pass through the tokens.
+       
+       
         # TODO: Implement this method.
         #   1. Call self.score_text(text) to get the numeric score.
         #   2. Return "positive" if the score is above 0.
@@ -132,22 +161,6 @@ class MoodAnalyzer:
         The current implementation is a placeholder so the code runs even
         before you implement it.
         """
-        tokens = self.preprocess(text)
-
-        positive_hits: List[str] = []
-        negative_hits: List[str] = []
-        score = 0
-
-        for token in tokens:
-            if token in self.positive_words:
-                positive_hits.append(token)
-                score += 1
-            if token in self.negative_words:
-                negative_hits.append(token)
-                score -= 1
-
-        return (
-            f"Score = {score} "
-            f"(positive: {positive_hits or '[]'}, "
-            f"negative: {negative_hits or '[]'})"
-        )
+        score = self.score_text(text)
+        label = self.predict_label(text)
+        return f"Model predicted '{label}' with a net score of {score}."
