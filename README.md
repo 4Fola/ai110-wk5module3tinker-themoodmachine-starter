@@ -1,3 +1,9 @@
+# Feedback Analysis
+<img src="Part3-StressTestandBreaktheModel.gif" alt="Part3-Stress Testing and Break the Model">
+
+
+# ---- END ----
+
 # The Mood Machine
 
 The Mood Machine is a simple text classifier that begins with a rule based approach and can optionally be extended with a small machine learning model. It tries to guess whether a short piece of text sounds **positive**, **negative**, **neutral**, or even **mixed** based on patterns in your data.
