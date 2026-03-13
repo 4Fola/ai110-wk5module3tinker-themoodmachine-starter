@@ -1,6 +1,7 @@
 # Feedback Analysis
 <img src="Part3-StressTestandBreaktheModel.gif" alt="Part3-Stress Testing and Break the Model">
-
+** | **
+<img src="TheMoodMachineComparisons.gif" alt="Completed Mood Machine Comparison | Rule-based vs ML">
 
 # ---- END ----
 
