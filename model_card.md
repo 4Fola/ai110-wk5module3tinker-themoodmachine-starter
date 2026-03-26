@@ -1,3 +1,4 @@
+# [Model Card](model_card.md) | [ReadMe](ReadMe.md) | 
 # Model Card: Mood Machine
 
 This model card is for the Mood Machine project, which includes **two** versions of a mood classifier:
